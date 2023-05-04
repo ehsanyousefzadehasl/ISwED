@@ -1,5 +1,5 @@
 # Image Segmentation with Encoder Decoders
-This repository contains the documentation and source code for experiments with encoder decoder modesl for image segmentation on different datasets.
+This repository contains the documentation and source code for experiments with encoder decoder models for image segmentation on different datasets.
 
 ## Background
 Computer vision is a sub-field in computer science field aiming at gathering, processing, analyzing, and understanding digital images and extracting information that can be used by numerical decision-making processes.
@@ -39,4 +39,7 @@ Simplify the representation of a digital image into something easier to understa
 
 ## Image Segmentation Datasets
 The datasets for this task:
-1. CamVids
+1. The Cambridge driving labeled Video databases (CamVids)
+2. The Cityscapes Dataset
+3. PASCAL Visual Object Classes (PASCAL VOC)
+4. Common Objects in COntext — Coco Dataset
