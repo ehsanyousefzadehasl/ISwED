@@ -43,6 +43,12 @@ Simplify the representation of a digital image into something easier to understa
 ## State of the art approach
 |TODO andres: Please add your summary of your research here on the state-of-the-art practice on image segmentation with encoder-decoder mechanisms
 
+- motivation of this work
+- advantage
+- improvement
+- a short description of the model
+
+
 ## Image Segmentation Datasets
 The datasets for this task:
 1. The Cambridge driving labeled Video databases (CamVids)
