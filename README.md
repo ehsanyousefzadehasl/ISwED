@@ -8,32 +8,35 @@ Computer vision is a sub-field in computer science field aiming at gathering, pr
 The process of partitioning a digital image into multiple image segments (image regions, image objects), which indeed are sets of pixels. In other words, image segmentation can be viewed as pixel labeling too.
 
 ### Goal
-Simplify the representation of a digital image into something easier to understand and analyze. 
+Simplify the representation of a digital image into something easier to understand and analyze. An image is a grid of pixels.
 
 ### Domain and Applications
-1. Content-based image retrieval: finding similar images sharing the similar objects
-2. Machine vision (Industrial) different from computer vision
-3. Medical Imaging
-4. Object detection tasks
+- Object detection tasks
     - Face detection
     - Pedestrain detection
     - Locating specific objects in satelite images
-5. Recognition tasks
+- Recognition tasks
     - Face recognition
     - Fingerprint recognition
-6. Traffic control systems
-7. Video survelliance systems
-8. etc.
+- Object localization
+- Traffic control systems
+- Video survelliance systems
+
+### Different kinds of image segmentation
+- Semantic segmentation (e.g., person and background)
+- Instance segmentation (e.g. each person will be identified individually)
 
 ### Traditional Computer Vision Approaches
-- Thresholding method (changing a grayscale image into a binary image based a threshold)
-    - maximum entropy method
-    - balanced histogram thresholding
-    - Otsu's method (maximum variance)
-    - k-means clustering
-- etc.
+- Thresholding method (Region-based Segmentation) ==> (changing a grayscale image into a binary image based a threshold)
+
+- Edge Detection method
+    - Using weight matrices (filters) and convoluting them with images
+
+- Clustering method: e.g., K-means clustering
+
 ### DL-based Appoaches
 - Fully Convolutional Networks (FCNs)
+
 ## Evaluation Metrics
 ## Encoder-Decoder based DL Models
 
