@@ -42,6 +42,7 @@ Simplify the representation of a digital image into something easier to understa
 
 ## State of the art approach
 |TODO andres: Please add your summary of your research here on the state-of-the-art practice on image segmentation with encoder-decoder mechanisms
+- https://reader.elsevier.com/reader/sd/pii/S0031320322007075?token=83FCA21D1027C3BFBF95656B895BEF0A262DF1328A65F90845CA8D0D34707028CBA43303B74BCF9E3624B7F3937DE7AB&originRegion=eu-west-1&originCreation=20230504124206
 
 ## Image Segmentation Datasets
 The datasets for this task:
