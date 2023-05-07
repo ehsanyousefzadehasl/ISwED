@@ -3,7 +3,6 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 from matplotlib import pyplot as plt
 import cv2
 
-
 #import tensorflow
 from tensorflow.keras.utils import get_source_inputs
 
@@ -14,7 +13,6 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, concatenate, Co
 from tensorflow.keras.optimizers import Adadelta, Nadam ,Adam
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, CSVLogger, TensorBoard
-
 
 import os
 import tensorflow.keras as keras
@@ -28,9 +26,7 @@ import segmentation_models as sm
 
 keras.backend.set_image_data_format('channels_last')
 
-
 dataset_path = Path("../CamVid")
-
 
 def tree(directory):
     print(f'+ {directory}')
@@ -38,7 +34,6 @@ def tree(directory):
         depth = len(path.relative_to(directory).parts)
         spacer = '    ' * depth
         print(f'{spacer}+ {path.name}')
-
 
 train_imgs = list((dataset_path / "train").glob("*.png"))
 train_labels = list((dataset_path / "train_labels").glob("*.png"))
@@ -51,19 +46,11 @@ test_labels = list((dataset_path / "test_labels").glob("*.png"))
 
 img_size = 512
 
-
-
-
-
 assert len(train_imgs) == len(train_labels), "No of Train images and label mismatch"
 assert len(val_imgs) == len(val_labels), "No of Train images and label mismatch"
 assert len(test_imgs) == len(test_labels), "No of Train images and label mismatch"
 
 sorted(train_imgs), sorted(train_labels), sorted(val_imgs), sorted(val_labels), sorted(test_imgs), sorted(test_labels);
-
-
-
-
 
 for im in train_imgs:
     assert dataset_path / "train_labels" / (im.stem +"_L.png") in train_labels , "{im} not there in label folder"
@@ -72,17 +59,12 @@ for im in val_imgs:
 for im in test_imgs:
     assert dataset_path / "test_labels" / (im.stem +"_L.png") in test_labels , "{im} not there in label folder"
 
-
-
-
 def make_pair(img,label,dataset):
     pairs = []
     for im in img:
         pairs.append((im , dataset / label / (im.stem +"_L.png")))
 
     return pairs
-
-
 
 
 train_pair = make_pair(train_imgs, "train_labels", dataset_path)
@@ -93,14 +75,8 @@ temp = choice(train_pair)
 img = img_to_array(load_img(temp[0], target_size=(img_size,img_size)))
 mask = img_to_array(load_img(temp[1], target_size = (img_size,img_size)))
 
-
-
-
 class_map_df = pd.read_csv(dataset_path / "class_dict.csv")
      
-
-
-
 class_map = []
 for index,item in class_map_df.iterrows():
     class_map.append(np.array([item['r'], item['g'], item['b']]))
@@ -108,21 +84,11 @@ for index,item in class_map_df.iterrows():
 len(class_map)
 
 
-
-
-
-
-
-
 def assert_map_range(mask,class_map):
     mask = mask.astype("uint8")
     for j in range(img_size):
         for k in range(img_size):
             assert mask[j][k] in class_map , tuple(mask[j][k])
-
-
-
-
 
 def form_2D_label(mask,class_map):
     mask = mask.astype("uint8")
@@ -134,17 +100,8 @@ def form_2D_label(mask,class_map):
     return label
 
 
-
-
-
-
-
 lab = form_2D_label(mask,class_map)
 np.unique(lab,return_counts=True)
-
-
-
-
 
 class DataGenerator(Sequence):
     'Generates data for Keras'
@@ -201,33 +158,19 @@ class DataGenerator(Sequence):
 
         return np.array(batch_imgs) ,np.array(batch_labels)
 
-
-
-
-
-
-
 train_generator = DataGenerator(train_pair+test_pair,class_map,batch_size=4, dim=(img_size,img_size,3) ,shuffle=True)
 train_steps = train_generator.__len__()
 print(train_steps)
 
-
-
 dX,y = train_generator.__getitem__(1)
 print(y.shape)
      
-
-
-
 val_generator = DataGenerator(val_pair, class_map, batch_size=4, dim=(img_size,img_size,3) ,shuffle=True)
 val_steps = val_generator.__len__()
 print(val_steps)
 
-
-
 def upsample_conv(filters, kernel_size, strides, padding):
     return Conv2DTranspose(filters, kernel_size, strides=strides, padding=padding)
-
 
 input_img = Input(shape=(512, 512, 3),name='image_input')
 
@@ -274,26 +217,12 @@ c11 = Conv2D(64, (3, 3), activation='relu', padding='same') (c11)
 
 d = Conv2D(32, (1, 1), activation='softmax') (c11)
 
-
-
-
 iou = sm.metrics.IOUScore(threshold=0.5)
-
-
-
 
 seg_model = Model(inputs=[input_img], outputs=[d])
 seg_model.summary()
 
-
-
-
-
-
 seg_model.compile(optimizer='adam', loss='categorical_crossentropy' ,metrics=['accuracy',iou])
-
-
-
 
 mc = ModelCheckpoint(mode='max', filepath='weights/Unet_Relu.h5', monitor='val_accuracy',save_best_only='True', save_weights_only='True', verbose=1)
 es = EarlyStopping(mode='max', monitor='val_accuracy', patience=10, verbose=1)
@@ -302,11 +231,28 @@ rl = ReduceLROnPlateau(monitor='val_accuracy',factor=0.1,patience=10,verbose=1,m
 cv = CSVLogger("logs/log.csv" , append=True , separator=',')
      
 
-
-
-
-
-results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=150,
+results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=50,
                               validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,es,tb,rl,cv])
 
 
+
+# visualization
+from matplotlib import pyplot as plt
+plt.figure(figsize=(30, 5))
+plt.subplot(121)
+plt.plot(results.history['iou_score'])
+plt.plot(results.history['val_iou_score'])
+plt.title('Model iou_score')
+plt.ylabel('iou_score')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+
+# Plot training & validation loss values
+plt.subplot(122)
+plt.plot(results.history['loss'])
+plt.plot(results.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.save("performance.jpg")

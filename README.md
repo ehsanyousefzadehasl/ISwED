@@ -73,7 +73,23 @@ Final comparison of the methods:
 
 ![MPA](images/metrics/02-mpa.png)
 
-- **Intersection over Union (IoU)**: 
+- **Intersection over Union (IoU)**: the other name of this metric is **Jaccard Index**. 
+
+![IoU](images/metrics/03-IoU.png)
+
+- **Mean-IoU**: is defined as the average IoU over all classes. It is widely used in reporting the performance of modern segmentation algorithms.
+
+- **Precision/ Recall/ F1 Score**: precision and recall are defined as follows:
+
+![precision and recall](images/metrics/04-precision_recall.png)
+
+TP, FP, and FN stand for True Positive, False Positive, and False Negative, respectively.
+
+- **F1 score**: is defined as harmonic mean of **precision** and **recall**.
+
+ ![F1 score](images/metrics/05-F1_score.png)
+
+ - **Dice Coefficient**: this metric is commonly used in medical image analysis. It is defined as twice the overlap area of predicted and ground-truth maps, divided by the total number of pixels in both images.
 
 ## Encoder-Decoder based DL Models
 
