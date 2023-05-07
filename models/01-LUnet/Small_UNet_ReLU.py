@@ -26,7 +26,7 @@ import segmentation_models as sm
 
 keras.backend.set_image_data_format('channels_last')
 
-dataset_path = Path("../CamVid")
+dataset_path = Path("../../../CamVid")
 
 def tree(directory):
     print(f'+ {directory}')
