@@ -234,7 +234,7 @@ rl = ReduceLROnPlateau(monitor='val_accuracy',factor=0.1,patience=10,verbose=1,m
 cv = CSVLogger("logs/log.csv" , append=True , separator=',')
      
 
-results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=50,
+results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=100,
                               validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,es,tb,rl,cv])
 
 
