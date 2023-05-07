@@ -35,9 +35,46 @@ Simplify the representation of a digital image into something easier to understa
 - Clustering method: e.g., K-means clustering
 
 ### DL-based Appoaches
+Link to the paper: [paper](https://ieeexplore.ieee.org/document/9356353)
 - Fully Convolutional Networks (FCNs)
+    - These networks consist only of convolutional layers. Skip connections allow feature maps from final layers to be up-sampled and fused with feature maps of earlier layers, which helps the model to produce a very accurate and detailed segmentation by combining the semantic information from the deep and coarse layers with the appearance information from the shallow and fine layers.
+![Skip connections](images/FCN_skip_connections.webp)
+
+- Convolutional Models with Graphical Models
+    - These models came into existense as deep CNNs have poor localization property. So, the responses at the final CNN layers were combined with Conditional Random Field (CRF), which resulted in higher accuracy than the FCNs.
+- **Encoder-Decoder Based Models (Our Focus in this project)**
+    - It is divided into two main categories:
+        1. **Encoder-Decoder Models for General Segmentation**: They consist of two parts: encoder, decoder. An encoder uses convolutional layers, however, a decoder uses a deconvolutional network, which generates a maps of pixel-wise class probabilities based on the input feature vector. (popular models: **SegNet**, **HRNet**)
+![general image segmentation](images/general_image_segmentation.webp)
+        2. Encoder-Decoder for Medical and biomedical Image Segmentation: **U-Net** and **V-Net** are the two most popular ones. **U-Net** is usually used for the segmenation of biological microscopy images, and **V-Net** is used for 3D medical image segmentation. It uses data augmentation to learn from the available annotated images. U-Net architecture consists of two parts: a contracting part and a symmetric expanding path, for capturing context and enabling precise localization respectively.
+![Unet](images/Unet.webp)
+**V-Net** uses a new objective function for model training which is based on **Dice coefficient**. V-Net model is trained on MRI volumes and predicts the segmentation for the whole MRI volume at once.
+![Vnet](images/Vnet.webp)
+
+- R-CNN based Models (Instance sampling)
+    - Regional Convolutional Neural Networks, the goal is to address the problem of instance segmentation.
+- Multi-scale and Pyramid Network based Models
+
+- Dilated Convolutional Models and DeepLab Family
+- Recurrent Neural Network based Models
+- Attention-based Models
+- Generative Models and Adversarial Training
+- CNN Models with Active Contour Models
+
+Final comparison of the methods:
+![comparison](images/results%20on%20city%20dataset.webp)
 
 ## Evaluation Metrics
+1. **Pixel Accuracy (PA)**: Ratio of pixels properly classified, divided by the total number of pixels. If we have K foreground classes with background. **p<sub>ij** is the number of pixels of class i predicted as belonging to class j. 
+
+![PA](images/metrics/01-pixel_accuracy.png)
+
+- **Mean Pixel Accuracy (MPA)**: Ratio of correct pixels is computed in a per-class manner and then averaged over the total number of classes.
+
+![MPA](images/metrics/02-mpa.png)
+
+- **Intersection over Union (IoU)**: 
+
 ## Encoder-Decoder based DL Models
 
 ## State of the art approach
@@ -52,7 +89,7 @@ Simplify the representation of a digital image into something easier to understa
 
 ## Image Segmentation Datasets
 The datasets for this task:
-1. The Cambridge driving labeled Video databases (CamVids)
+1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)**
 2. The Cityscapes Dataset
 3. PASCAL Visual Object Classes (PASCAL VOC)
 4. Common Objects in COntext — Coco Dataset
