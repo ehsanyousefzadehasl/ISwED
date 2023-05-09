@@ -266,7 +266,7 @@ tb = TensorBoard(log_dir="logs/", histogram_freq=0, write_graph=True, write_imag
 cv = CSVLogger("logs/log.csv" , append=True , separator=',')
      
 
-results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=100,
+results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=150,
                               validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,tb,cv])
 
 
