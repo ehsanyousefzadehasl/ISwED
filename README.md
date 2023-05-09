@@ -145,12 +145,16 @@ Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/g
 
 #### Eval
 
-- Augmentation does not seem to improve results. Could however also be a bug in the way the augmentation was done, sadly no time for a rerun
+- Augmentation did not to improve results. However, this is due to a buggy usage of the RAndomHorizontalFlip class: It was not ensured that the augmentation is performed on both/ or neither => possible that only input or label was flipped which obviously worsended results. Sadly there was no time for a rerun.
+
 - Final Loss (default):
   - Train: 0.118
   - Val: 0.404
 - IOU (default): 0.272  
   values seems too low?: maybe wrong usage since for the resnet pytorch and the JaccardIndex from torchmetrics was used while the UNet training and evaluation was done in TensorFlow
+
+Example segmentations on Test set (triplets of: gt - label - prediction):
+![segmentation examples](images/resnet/resnet_test_samples.png)
 
 ## State of the art approach
 
