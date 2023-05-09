@@ -24,6 +24,23 @@ import shutil
 from random import sample, choice
 import segmentation_models as sm
 
+# ********** Snippet for limiting the GPU memory allocation by Tensorflow ********
+# Ref: https://www.tensorflow.org/guide/gpu
+import tensorflow
+gpus = tensorflow.config.experimental.list_physical_devices('GPU')
+if gpus:
+  try:
+    # Currently, memory growth needs to be the same across GPUs
+    for gpu in gpus:
+      tensorflow.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tensorflow.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Memory growth must be set before GPUs have been initialized
+    print(e)
+# ********************************************************************************
+
+
 keras.backend.set_image_data_format('channels_last')
 
 dataset_path = Path("../../../CamVid")
@@ -247,16 +264,14 @@ seg_model.summary()
 seg_model.compile(optimizer='adam', loss='categorical_crossentropy' ,metrics=['accuracy',iou])
 
 mc = ModelCheckpoint(mode='max', filepath='weights/Unet_Relu.h5', monitor='val_accuracy',save_best_only='True', save_weights_only='True', verbose=1)
-es = EarlyStopping(mode='max', monitor='val_accuracy', patience=10, verbose=1)
+# es = EarlyStopping(mode='max', monitor='val_accuracy', patience=10, verbose=1)
 tb = TensorBoard(log_dir="logs/", histogram_freq=0, write_graph=True, write_images=False)
-rl = ReduceLROnPlateau(monitor='val_accuracy',factor=0.1,patience=10,verbose=1,mode="max",min_lr=0.0001)
+# rl = ReduceLROnPlateau(monitor='val_accuracy',factor=0.1,patience=10,verbose=1,mode="max",min_lr=0.0001)
 cv = CSVLogger("logs/log.csv" , append=True , separator=',')
      
 
-results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=100,
-                              validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,es,tb,rl,cv])
-
-
+results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=150,
+                              validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,tb,cv])
 
 # visualization
 from matplotlib import pyplot as plt

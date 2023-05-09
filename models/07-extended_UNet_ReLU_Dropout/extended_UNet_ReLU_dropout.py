@@ -24,6 +24,7 @@ import shutil
 from random import sample, choice
 import segmentation_models as sm
 
+
 # ********** Snippet for limiting the GPU memory allocation by Tensorflow ********
 # Ref: https://www.tensorflow.org/guide/gpu
 import tensorflow
@@ -39,6 +40,7 @@ if gpus:
     # Memory growth must be set before GPUs have been initialized
     print(e)
 # ********************************************************************************
+
 
 keras.backend.set_image_data_format('channels_last')
 
@@ -187,6 +189,7 @@ print(val_steps)
 
 
 # model
+
 def upsample_conv(filters, kernel_size, strides, padding):
     return Conv2DTranspose(filters, kernel_size, strides=strides, padding=padding)
 
@@ -208,49 +211,69 @@ c4 = Conv2D(128, (3, 3), activation='relu', padding='same') (p3)
 c4 = Conv2D(128, (3, 3), activation='relu', padding='same') (c4)
 p4 = MaxPooling2D(pool_size=(2, 2)) (c4)
 
-
 c5 = Conv2D(256, (3, 3), activation='relu', padding='same') (p4)
 c5 = Conv2D(256, (3, 3), activation='relu', padding='same') (c5)
+p5 = MaxPooling2D(pool_size=(2, 2)) (c5)
 
-u6 = upsample_conv(128, (2, 2), strides=(2, 2), padding='same') (c5)
-u6 = concatenate([u6, c4])
-c6 = Conv2D(128, (3, 3), activation='relu', padding='same') (u6)
-c6 = Conv2D(128, (3, 3), activation='relu', padding='same') (c6)
+c6 = Conv2D(512, (3, 3), activation='relu', padding='same') (p5)
+c6 = Conv2D(512, (3, 3), activation='relu', padding='same') (c6)
+p6 = MaxPooling2D(pool_size=(2, 2)) (c6)
+p6 = Dropout(rate=0.5) (p6)
 
-u7 = upsample_conv(64, (2, 2), strides=(2, 2), padding='same') (c6)
-u7 = concatenate([u7, c3])
-c7 = Conv2D(64, (3, 3), activation='relu', padding='same') (u7)
-c7 = Conv2D(64, (3, 3), activation='relu', padding='same') (c7)
+c7 = Conv2D(1024, (3, 3), activation='relu', padding='same') (p6)
+c7 = Conv2D(1024, (3, 3), activation='relu', padding='same') (c7)
+c7 = Dropout(rate=0.5) (c7)
 
-u8 = upsample_conv(32, (2, 2), strides=(2, 2), padding='same') (c7)
-u8 = concatenate([u8, c2])
-c8 = Conv2D(32, (3, 3), activation='relu', padding='same') (u8)
-c8 = Conv2D(32, (3, 3), activation='relu', padding='same') (c8)
+u8 = upsample_conv(512, (2, 2), strides=(2, 2), padding='same') (c7)
+u8 = concatenate([u8, c6])
+c8 = Conv2D(512, (3, 3), activation='relu', padding='same') (u8)
+c8 = Conv2D(512, (3, 3), activation='relu', padding='same') (c8)
+c8 = Dropout(rate=0.5) (c8)
 
-u9 = upsample_conv(16, (2, 2), strides=(2, 2), padding='same') (c8)
-u9 = concatenate([u9, c1], axis=3)
-c9 = Conv2D(16, (3, 3), activation='relu', padding='same') (u9)
-c9 = Conv2D(16, (3, 3), activation='relu', padding='same') (c9)
+u9 = upsample_conv(256, (2, 2), strides=(2, 2), padding='same') (c8)
+u9 = concatenate([u9, c5])
+c9 = Conv2D(256, (3, 3), activation='relu', padding='same') (u9)
+c9 = Conv2D(256, (3, 3), activation='relu', padding='same') (c9)
+c9 = Dropout(rate=0.5) (c9)
 
-d = Conv2D(32, (1, 1), activation='softmax') (c9)
+u10 = upsample_conv(128, (3, 3), strides=(2, 2), padding='same') (c9)
+u10 = concatenate([u10, c4])
+c10 = Conv2D(128, (3, 3), activation='relu', padding='same') (u10)
+c10 = Conv2D(128, (3, 3), activation='relu', padding='same') (c10)
 
-#
+u11 = upsample_conv(64, (2, 2), strides=(2, 2), padding='same') (c10)
+u11 = concatenate([u11, c3])
+c11 = Conv2D(64, (3, 3), activation='relu', padding='same') (u11)
+c11 = Conv2D(64, (3, 3), activation='relu', padding='same') (c11)
+
+u12 = upsample_conv(32, (2, 2), strides=(2, 2), padding='same') (c11)
+u12 = concatenate([u12, c2])
+c12 = Conv2D(32, (3, 3), activation='relu', padding='same') (u12)
+c12 = Conv2D(32, (3, 3), activation='relu', padding='same') (c12)
+
+u13 = upsample_conv(16, (2, 2), strides=(2, 2), padding='same') (c12)
+u13 = concatenate([u13, c1], axis=3)
+c13 = Conv2D(16, (3, 3), activation='relu', padding='same') (u13)
+c13 = Conv2D(16, (3, 3), activation='relu', padding='same') (c13)
+
+d = Conv2D(32, (1, 1), activation='softmax') (c13)
+
+##
 
 iou = sm.metrics.IOUScore(threshold=0.5)
-
 seg_model = Model(inputs=[input_img], outputs=[d])
 seg_model.summary()
 
 seg_model.compile(optimizer='adam', loss='categorical_crossentropy' ,metrics=['accuracy',iou])
 
 mc = ModelCheckpoint(mode='max', filepath='weights/Unet_Relu.h5', monitor='val_accuracy',save_best_only='True', save_weights_only='True', verbose=1)
-# es = EarlyStopping(mode='max', monitor='val_accuracy', patience=20, verbose=1)
+# es = EarlyStopping(mode='max', monitor='val_accuracy', patience=10, verbose=1)
 tb = TensorBoard(log_dir="logs/", histogram_freq=0, write_graph=True, write_images=False)
 # rl = ReduceLROnPlateau(monitor='val_accuracy',factor=0.1,patience=10,verbose=1,mode="max",min_lr=0.0001)
 cv = CSVLogger("logs/log.csv" , append=True , separator=',')
      
 
-results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=150,
+results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=100,
                               validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,tb,cv])
 
 # visualization

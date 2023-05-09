@@ -64,6 +64,15 @@ Link to the paper: [paper](https://ieeexplore.ieee.org/document/9356353)
 Final comparison of the methods:
 ![comparison](images/results%20on%20city%20dataset.webp)
 
+
+## Image Segmentation Datasets
+The datasets for this task:
+1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)**
+2. The Cityscapes Dataset
+3. PASCAL Visual Object Classes (PASCAL VOC)
+4. Common Objects in COntext — Coco Dataset
+
+
 ## Evaluation Metrics
 1. **Pixel Accuracy (PA)**: Ratio of pixels properly classified, divided by the total number of pixels. If we have K foreground classes with background. **p<sub>ij** is the number of pixels of class i predicted as belonging to class j. 
 
@@ -92,6 +101,17 @@ TP, FP, and FN stand for True Positive, False Positive, and False Negative, resp
  - **Dice Coefficient**: this metric is commonly used in medical image analysis. It is defined as twice the overlap area of predicted and ground-truth maps, divided by the total number of pixels in both images.
 
 ## Encoder-Decoder based DL Models
+For this project, we selected UNet model and looked at the following variants of it.
+1. UNet + ReLU
+2. UNet + Leaky ReLU
+3. small UNet + ReLU
+4. small UNet + Leaky ReLU
+5. extended UNet + ReLU
+6. extended UNet + Leaky ReLU
+7. extended UNet + ReLU + Dropout
+8. overextended UNet + ReLU
+9. overextended UNet + Leaky ReLU
+10. overextended UNet + ReLU + Dropout
 
 ## State of the art approach
 |TODO andres: Please add your summary of your research here on the state-of-the-art practice on image segmentation with encoder-decoder mechanisms
@@ -103,9 +123,4 @@ TP, FP, and FN stand for True Positive, False Positive, and False Negative, resp
 - a short description of the model
 
 
-## Image Segmentation Datasets
-The datasets for this task:
-1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)**
-2. The Cityscapes Dataset
-3. PASCAL Visual Object Classes (PASCAL VOC)
-4. Common Objects in COntext — Coco Dataset
+

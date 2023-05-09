@@ -40,6 +40,7 @@ if gpus:
     print(e)
 # ********************************************************************************
 
+
 keras.backend.set_image_data_format('channels_last')
 
 dataset_path = Path("../../../CamVid")
@@ -185,22 +186,12 @@ val_generator = DataGenerator(val_pair, class_map, batch_size=4, dim=(img_size,i
 val_steps = val_generator.__len__()
 print(val_steps)
 
-
-# model
 def upsample_conv(filters, kernel_size, strides, padding):
     return Conv2DTranspose(filters, kernel_size, strides=strides, padding=padding)
 
-
 input_img = Input(shape=(512, 512, 3),name='image_input')
-c1 = Conv2D(16, (3, 3), activation='relu', padding='same') (input_img)
-c1 = Conv2D(16, (3, 3), activation='relu', padding='same') (c1)
-p1 = MaxPooling2D((2, 2)) (c1)
 
-c2 = Conv2D(32, (3, 3), activation='relu', padding='same') (p1)
-c2 = Conv2D(32, (3, 3), activation='relu', padding='same') (c2)
-p2 = MaxPooling2D((2, 2)) (c2)
-
-c3 = Conv2D(64, (3, 3), activation='relu', padding='same') (p2)
+c3 = Conv2D(64, (3, 3), activation='relu', padding='same') (input_img)
 c3 = Conv2D(64, (3, 3), activation='relu', padding='same') (c3)
 p3 = MaxPooling2D((2, 2)) (c3)
 
@@ -211,30 +202,49 @@ p4 = MaxPooling2D(pool_size=(2, 2)) (c4)
 
 c5 = Conv2D(256, (3, 3), activation='relu', padding='same') (p4)
 c5 = Conv2D(256, (3, 3), activation='relu', padding='same') (c5)
+p5 = MaxPooling2D(pool_size=(2, 2)) (c5)
 
-u6 = upsample_conv(128, (2, 2), strides=(2, 2), padding='same') (c5)
-u6 = concatenate([u6, c4])
-c6 = Conv2D(128, (3, 3), activation='relu', padding='same') (u6)
-c6 = Conv2D(128, (3, 3), activation='relu', padding='same') (c6)
+c6 = Conv2D(512, (3, 3), activation='relu', padding='same') (p5)
+c6 = Conv2D(512, (3, 3), activation='relu', padding='same') (c6)
+p6 = MaxPooling2D(pool_size=(2, 2)) (c6)
 
-u7 = upsample_conv(64, (2, 2), strides=(2, 2), padding='same') (c6)
-u7 = concatenate([u7, c3])
-c7 = Conv2D(64, (3, 3), activation='relu', padding='same') (u7)
-c7 = Conv2D(64, (3, 3), activation='relu', padding='same') (c7)
+c7 = Conv2D(1024, (3, 3), activation='relu', padding='same') (p6)
+c7 = Conv2D(1024, (3, 3), activation='relu', padding='same') (c7)
+p7 = MaxPooling2D(pool_size=(2, 2)) (c7)
 
-u8 = upsample_conv(32, (2, 2), strides=(2, 2), padding='same') (c7)
-u8 = concatenate([u8, c2])
-c8 = Conv2D(32, (3, 3), activation='relu', padding='same') (u8)
-c8 = Conv2D(32, (3, 3), activation='relu', padding='same') (c8)
 
-u9 = upsample_conv(16, (2, 2), strides=(2, 2), padding='same') (c8)
-u9 = concatenate([u9, c1], axis=3)
-c9 = Conv2D(16, (3, 3), activation='relu', padding='same') (u9)
-c9 = Conv2D(16, (3, 3), activation='relu', padding='same') (c9)
+c77 = Conv2D(2048, (3, 3), activation='relu', padding='same') (p7)
+c77 = Conv2D(2048, (3, 3), activation='relu', padding='same') (c77)
 
-d = Conv2D(32, (1, 1), activation='softmax') (c9)
 
-#
+u81 = upsample_conv(1024, (2, 2), strides=(2, 2), padding='same') (c77)
+u81 = concatenate([u81, c7])
+c81 = Conv2D(1024, (3, 3), activation='relu', padding='same') (u81)
+c81 = Conv2D(1024, (3, 3), activation='relu', padding='same') (c81)
+
+
+u8 = upsample_conv(512, (2, 2), strides=(2, 2), padding='same') (c81)
+u8 = concatenate([u8, c6])
+c8 = Conv2D(512, (3, 3), activation='relu', padding='same') (u8)
+c8 = Conv2D(512, (3, 3), activation='relu', padding='same') (c8)
+
+u9 = upsample_conv(256, (2, 2), strides=(2, 2), padding='same') (c8)
+u9 = concatenate([u9, c5])
+c9 = Conv2D(256, (3, 3), activation='relu', padding='same') (u9)
+c9= Conv2D(256, (3, 3), activation='relu', padding='same') (c9)
+
+
+u10 = upsample_conv(128, (3, 3), strides=(2, 2), padding='same') (c9)
+u10 = concatenate([u10, c4])
+c10 = Conv2D(128, (3, 3), activation='relu', padding='same') (u10)
+c10 = Conv2D(128, (3, 3), activation='relu', padding='same') (c10)
+
+u11 = upsample_conv(64, (2, 2), strides=(2, 2), padding='same') (c10)
+u11 = concatenate([u11, c3])
+c11 = Conv2D(64, (3, 3), activation='relu', padding='same') (u11)
+c11 = Conv2D(64, (3, 3), activation='relu', padding='same') (c11)
+
+d = Conv2D(32, (1, 1), activation='softmax') (c11)
 
 iou = sm.metrics.IOUScore(threshold=0.5)
 
@@ -244,12 +254,11 @@ seg_model.summary()
 seg_model.compile(optimizer='adam', loss='categorical_crossentropy' ,metrics=['accuracy',iou])
 
 mc = ModelCheckpoint(mode='max', filepath='weights/Unet_Relu.h5', monitor='val_accuracy',save_best_only='True', save_weights_only='True', verbose=1)
-# es = EarlyStopping(mode='max', monitor='val_accuracy', patience=20, verbose=1)
+# es = EarlyStopping(mode='max', monitor='val_accuracy', patience=10, verbose=1)
 tb = TensorBoard(log_dir="logs/", histogram_freq=0, write_graph=True, write_images=False)
 # rl = ReduceLROnPlateau(monitor='val_accuracy',factor=0.1,patience=10,verbose=1,mode="max",min_lr=0.0001)
 cv = CSVLogger("logs/log.csv" , append=True , separator=',')
      
-
 results = seg_model.fit(train_generator , steps_per_epoch=train_steps ,epochs=150,
                               validation_data=val_generator,validation_steps=val_steps,callbacks=[mc,tb,cv])
 
