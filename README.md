@@ -132,10 +132,25 @@ For this project, we selected UNet model and looked at the following variants of
 
 ### Pretrained FCN ResNet 50
 
-Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/generated/torchvision.models.segmentation.fcn_resnet50.html) provided by torchvision we finetune on all layers and change the classifier and [aux classifier](https://paperswithcode.com/method/auxiliary-classifier#:~:text=Auxiliary%20Classifiers%20are%20type%20of,the%20end%20of%20the%20network) to have an output size of 32 channels. Trained variations:
+Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/generated/torchvision.models.segmentation.fcn_resnet50.html) provided by torchvision we finetune on all layers and change the classifier and [aux classifier](https://paperswithcode.com/method/auxiliary-classifier#:~:text=Auxiliary%20Classifiers%20are%20type%20of,the%20end%20of%20the%20network) to have an output size of 32 channels.
 
-1. Default
-1. Default with data augmentation
+#### Trained variations
+
+1. default
+1. flip (Default with data augmentation Random Horizontal Flip)
+
+#### Training
+
+![train loss plot](images/resnet/train_val_loss.png)
+
+#### Eval
+
+- Augmentation does not seem to improve results. Could however also be a bug in the way the augmentation was done, sadly no time for a rerun
+- Final Loss (default):
+  - Train: 0.118
+  - Val: 0.404
+- IOU (default): 0.272  
+  values seems too low?: maybe wrong usage since for the resnet pytorch and the JaccardIndex from torchmetrics was used while the UNet training and evaluation was done in TensorFlow
 
 ## State of the art approach
 
