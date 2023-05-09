@@ -125,7 +125,8 @@ For this project, we selected UNet model and looked at the following variants of
 ### CNN and Transformer mix
 https://reader.elsevier.com/reader/sd/pii/S0031320322007075?token=83FCA21D1027C3BFBF95656B895BEF0A262DF1328A65F90845CA8D0D34707028CBA43303B74BCF9E3624B7F3937DE7AB&originRegion=eu-west-1&originCreation=20230504124206
 
-
+1. In the domain of medical imaging, a big problem has been cases of organ identification images, where some organs are small or thin while other are big. Many models typically have problems capturing especially the small and thin ones. Therefore, in the paper, they propose a model that mixes a CNN with a transformer model, such that they run in parallel with each other. They do this as transformer models have proven to be good at the task of long distance relationships. That makes it easier for the model to capture these small details in images, that would normally not be captured by standard CNN models.
+The model evaluated to pretty average results when compared to other state of the art models, yet especailly for the smaller organs in the images, the model gave improvements (while for bigger organs, the model had slightly lower performance).
 
 
 
