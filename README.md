@@ -80,7 +80,7 @@ Final comparison of the methods:
 
 The datasets for this task:
 
-1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)**
+1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)** [Pre train/test/val split on kaggle](https://www.kaggle.com/datasets/carlolepelaars/camvid)
 2. The Cityscapes Dataset
 3. PASCAL Visual Object Classes (PASCAL VOC)
 4. Common Objects in COntext — Coco Dataset
@@ -132,7 +132,7 @@ For this project, we selected UNet model and looked at the following variants of
 
 ### Pretrained FCN ResNet 50
 
-Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/generated/torchvision.models.segmentation.fcn_resnet50.html) provided by torchvision we finetune on all layers and change the classifier and [aux classifier](https://paperswithcode.com/method/auxiliary-classifier#:~:text=Auxiliary%20Classifiers%20are%20type%20of,the%20end%20of%20the%20network) to have an output size of 32 channels.
+Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/generated/torchvision.models.segmentation.fcn_resnet50.html) provided by torchvision we finetune on all layers and change the classifier and [aux classifier](https://paperswithcode.com/method/auxiliary-classifier#:~:text=Auxiliary%20Classifiers%20are%20type%20of,the%20end%20of%20the%20network) to have an output size of 32 channels. Adapted from [here](https://github.com/sovit-123/CamVid-Image-Segmentation-using-FCN-ResNet50-with-PyTorch).
 
 #### Trained variations
 
