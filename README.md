@@ -147,14 +147,13 @@ Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/g
 
 - Augmentation did at first not improve results. However, this was due to a buggy usage of the RandomHorizontalFlip class: It was not ensured that the augmentation is performed on both/ or neither => possible that only input or label was flipped which obviously worsended results. After a fix and a rerun the augmentation slightly helped, also not significantly.
 
-Example segmentations on Test set (triplets of: gt - label - prediction):
+Example segmentations on Test set:
 ![segmentation examples](images/resnet/resnet_samples_col.png)
 
 ## State of the art approach
 
 Many of the papers found mentioned UNET as the state of the art within image segmentation. Therefore we are focusing more on alternatives to this
-  
-  
+
 ### CNN and Transformer mix
 
 https://reader.elsevier.com/reader/sd/pii/S0031320322007075?token=83FCA21D1027C3BFBF95656B895BEF0A262DF1328A65F90845CA8D0D34707028CBA43303B74BCF9E3624B7F3937DE7AB&originRegion=eu-west-1&originCreation=20230504124206
