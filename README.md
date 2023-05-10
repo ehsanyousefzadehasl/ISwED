@@ -61,7 +61,7 @@ Link to the paper: [paper](https://ieeexplore.ieee.org/document/9356353)
   ![general image segmentation](images/general_image_segmentation.webp) 2. Encoder-Decoder for Medical and biomedical Image Segmentation: **U-Net** and **V-Net** are the two most popular ones. **U-Net** is usually used for the segmenation of biological microscopy images, and **V-Net** is used for 3D medical image segmentation. It uses data augmentation to learn from the available annotated images. U-Net architecture consists of two parts: a contracting part and a symmetric expanding path, for capturing context and enabling precise localization respectively.
   ![Unet](images/Unet.webp)
   **V-Net** uses a new objective function for model training which is based on **Dice coefficient**. V-Net model is trained on MRI volumes and predicts the segmentation for the whole MRI volume at once.
-  ![Vnet](images/Vnet.webp)
+  ![Vnet](images/vnet.webp)
 
 - R-CNN based Models (Instance sampling)
   - Regional Convolutional Neural Networks, the goal is to address the problem of instance segmentation.
