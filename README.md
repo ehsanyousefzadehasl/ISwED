@@ -161,4 +161,4 @@ https://reader.elsevier.com/reader/sd/pii/S0031320322007075?token=83FCA21D1027C3
 In the domain of medical imaging, a big problem has been cases of organ identification images, where some organs are small or thin while other are big. Many models typically have problems capturing especially the small and thin ones. Therefore, in the paper, they propose a model that mixes a CNN with a transformer model, such that they run in parallel with each other. They do this as transformer models have proven to be good at the task of long distance relationships. That makes it easier for the model to capture these small details in images, that would normally not be captured by standard CNN models.
 The model evaluated to pretty average results when compared to other state of the art models, yet especailly for the smaller organs in the images, the model gave improvements (while for bigger organs, the model had slightly lower performance).
 
-![CNN Transformer plot](images/cnn_transformer.png)
+![CNN Transformer plot](images/cnn_transformer.jpg)
