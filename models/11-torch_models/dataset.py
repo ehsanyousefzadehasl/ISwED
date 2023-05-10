@@ -1,11 +1,14 @@
-from torch import nn
+import random
 from pathlib import Path
+
 import numpy as np
-from helper import get_label_mask, class_values
 import torch.utils.data
 import torchvision.transforms.functional
-from torchvision.transforms.functional import InterpolationMode
 from PIL import Image
+from torch import nn
+from torchvision.transforms.functional import InterpolationMode
+
+from helper import class_values, get_label_mask
 
 
 class CamvidDataset(torch.utils.data.Dataset):
@@ -30,9 +33,10 @@ class CamvidDataset(torch.utils.data.Dataset):
         if self.debug:
             self.ids = self.ids[:16]
 
+        # horizonal_flip_transfrom = torchvision.transforms.RandomHorizontalFlip(p=0.5)
         # Transformations
         self.img_transforms = torchvision.transforms.Compose([
-            torchvision.transforms.RandomHorizontalFlip(p=0.5),
+            # horizonal_flip_transfrom,
             torchvision.transforms.Resize((img_dim,img_dim)),
             torchvision.transforms.Normalize(
             mean=[0.45734706, 0.43338275, 0.40058118],
@@ -40,9 +44,11 @@ class CamvidDataset(torch.utils.data.Dataset):
             )
         ])
         self.mask_transforms = torchvision.transforms.Compose([
-            torchvision.transforms.RandomHorizontalFlip(p=0.5),
+            # horizonal_flip_transfrom,
             torchvision.transforms.Resize((img_dim,img_dim), interpolation=InterpolationMode.NEAREST),
         ])
+
+        self.flip_transform = torchvision.transforms.RandomHorizontalFlip(p=1)
 
     def get_mask(self,img_path:Path) ->Path:
         mask_name=img_path.with_suffix("").name + "_L.png"
@@ -59,8 +65,8 @@ class CamvidDataset(torch.utils.data.Dataset):
         id_ = self.ids[idx]
         # Load image
         img = np.array(Image.open(self.images[id_]).convert('RGB'))
-        mask = np.array(Image.open(self.masks[id_]).convert('RGB'))         
-        
+        mask = np.array(Image.open(self.masks[id_]).convert('RGB'))   
+     
         # rearrange dimensions
         img = np.transpose(img, (2, 0, 1))
         
@@ -70,11 +76,15 @@ class CamvidDataset(torch.utils.data.Dataset):
         # 
         img = torch.Tensor(img)
         mask = torch.Tensor(mask).unsqueeze(0)
+      
 
         # apply transformations
         img = self.mask_transforms(img)
         mask = self.mask_transforms(mask)
-        
+        # hflip = random.random() < .5
+        # if hflip:
+        #     img = self.flip_transform(img)
+        #     mask = self.flip_transform(mask)
         # rm singular dimension
         mask = mask.squeeze()
 
