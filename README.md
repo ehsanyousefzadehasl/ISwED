@@ -61,7 +61,7 @@ Link to the paper: [paper](https://ieeexplore.ieee.org/document/9356353)
   ![general image segmentation](images/general_image_segmentation.webp) 2. Encoder-Decoder for Medical and biomedical Image Segmentation: **U-Net** and **V-Net** are the two most popular ones. **U-Net** is usually used for the segmenation of biological microscopy images, and **V-Net** is used for 3D medical image segmentation. It uses data augmentation to learn from the available annotated images. U-Net architecture consists of two parts: a contracting part and a symmetric expanding path, for capturing context and enabling precise localization respectively.
   ![Unet](images/Unet.webp)
   **V-Net** uses a new objective function for model training which is based on **Dice coefficient**. V-Net model is trained on MRI volumes and predicts the segmentation for the whole MRI volume at once.
-  ![Vnet](images/Vnet.webp)
+  ![Vnet](images/vnet.webp)
 
 - R-CNN based Models (Instance sampling)
   - Regional Convolutional Neural Networks, the goal is to address the problem of instance segmentation.
@@ -80,7 +80,7 @@ Final comparison of the methods:
 
 The datasets for this task:
 
-1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)**
+1. **The Cambridge driving labeled Video databases (CamVids) (our focus for this mini-project)** [Pre train/test/val split on kaggle](https://www.kaggle.com/datasets/carlolepelaars/camvid)
 2. The Cityscapes Dataset
 3. PASCAL Visual Object Classes (PASCAL VOC)
 4. Common Objects in COntext — Coco Dataset
@@ -132,7 +132,7 @@ For this project, we selected UNet model and looked at the following variants of
 
 ### Pretrained FCN ResNet 50
 
-Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/generated/torchvision.models.segmentation.fcn_resnet50.html) provided by torchvision we finetune on all layers and change the classifier and [aux classifier](https://paperswithcode.com/method/auxiliary-classifier#:~:text=Auxiliary%20Classifiers%20are%20type%20of,the%20end%20of%20the%20network) to have an output size of 32 channels.
+Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/generated/torchvision.models.segmentation.fcn_resnet50.html) provided by torchvision we finetune on all layers and change the classifier and [aux classifier](https://paperswithcode.com/method/auxiliary-classifier#:~:text=Auxiliary%20Classifiers%20are%20type%20of,the%20end%20of%20the%20network) to have an output size of 32 channels. Adapted from [here](https://github.com/sovit-123/CamVid-Image-Segmentation-using-FCN-ResNet50-with-PyTorch).
 
 #### Trained variations
 
@@ -145,29 +145,20 @@ Using a pretrained [FCN_RESNET50 model](https://pytorch.org/vision/main/models/g
 
 #### Eval
 
-- Augmentation did not to improve results. However, this is due to a buggy usage of the RAndomHorizontalFlip class: It was not ensured that the augmentation is performed on both/ or neither => possible that only input or label was flipped which obviously worsended results. Sadly there was no time for a rerun.
+- Augmentation did at first not improve results. However, this was due to a buggy usage of the RandomHorizontalFlip class: It was not ensured that the augmentation is performed on both/ or neither => possible that only input or label was flipped which obviously worsended results. After a fix and a rerun the augmentation slightly helped, also not significantly.
 
-- Final Loss (default):
-  - Train: 0.118
-  - Val: 0.404
-- IOU (default): 0.272  
-  values seems too low?: maybe wrong usage since for the resnet pytorch and the JaccardIndex from torchmetrics was used while the UNet training and evaluation was done in TensorFlow
-
-Example segmentations on Test set (triplets of: gt - label - prediction):
-![segmentation examples](images/resnet/resnet_test_samples.png)
+Example segmentations on Test set:
+![segmentation examples](images/resnet/resnet_samples_col.png)
 
 ## State of the art approach
 
-|TODO andres: Please add your summary of your research here on the state-of-the-art practice on image segmentation with encoder-decoder mechanisms
-
-1. motivation of this work
-2. advantage
-3. improvement
-4. a short description of the model
+Many of the papers found mentioned UNET as the state of the art within image segmentation. Therefore we are focusing more on alternatives to this
 
 ### CNN and Transformer mix
 
 https://reader.elsevier.com/reader/sd/pii/S0031320322007075?token=83FCA21D1027C3BFBF95656B895BEF0A262DF1328A65F90845CA8D0D34707028CBA43303B74BCF9E3624B7F3937DE7AB&originRegion=eu-west-1&originCreation=20230504124206
 
-1. In the domain of medical imaging, a big problem has been cases of organ identification images, where some organs are small or thin while other are big. Many models typically have problems capturing especially the small and thin ones. Therefore, in the paper, they propose a model that mixes a CNN with a transformer model, such that they run in parallel with each other. They do this as transformer models have proven to be good at the task of long distance relationships. That makes it easier for the model to capture these small details in images, that would normally not be captured by standard CNN models.
-   The model evaluated to pretty average results when compared to other state of the art models, yet especailly for the smaller organs in the images, the model gave improvements (while for bigger organs, the model had slightly lower performance).
+In the domain of medical imaging, a big problem has been cases of organ identification images, where some organs are small or thin while other are big. Many models typically have problems capturing especially the small and thin ones. Therefore, in the paper, they propose a model that mixes a CNN with a transformer model, such that they run in parallel with each other. They do this as transformer models have proven to be good at the task of long distance relationships. That makes it easier for the model to capture these small details in images, that would normally not be captured by standard CNN models.
+The model evaluated to pretty average results when compared to other state of the art models, yet especailly for the smaller organs in the images, the model gave improvements (while for bigger organs, the model had slightly lower performance).
+
+![CNN Transformer plot](images/cnn_transformer.jpg)
